@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copy Text Display Tool — Rebecca Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;1,14..32,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styleshtml.css">
+</head>
+<body>
+
+  <header>
+    <a class="nav-name" href="index.html">Rebecca Yang</a>
+
+    <a class="nav-about" href="About.html">About</a>
+
+    <div class="nav-dropdown">
+      <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        Design
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li role="none"><a href="installation.html" role="menuitem">Installation</a></li>
+        <li role="none"><a href="web-based.html" role="menuitem">Web-based</a></li>
+        <li role="none"><a href="product-design.html" role="menuitem">Product Design</a></li>
+      </ul>
+    </div>
+
+    <a class="linkedin-link" href="https://www.linkedin.com/in/rebecca-yang-01855634b" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+      </svg>
+    </a>
+  </header>
+
+  <div class="project-banner">
+    <img src="quickfox.png" alt="Copy Text Display Tool banner">
+  </div>
+
+  <main class="project-page project-page--has-banner">
+
+    <div class="project-page-split">
+
+      <div class="project-page-left">
+        <h1 class="project-page-title">Copy Text Display Tool</h1>
+        <div class="project-page-meta">
+          <p>Coding | HTML</p>
+          <p>Generative | Type</p>
+        </div>
+        <hr class="project-divider">
+        <p class="project-page-desc">
+          This is a tool that simplifies the process of creating titles for posters, videos, booklets and more. When I was creating posters for my school's Speaker Series I often found it difficult to find interesting typography for my titles. So I created a tool that could generate cool effects and motion graphics to assist my graphic designs.
+        </p>
+      </div>
+
+      <div class="project-page-images">
+        <video src="Typography.mp4" autoplay loop muted playsinline class="slide-img"></video>
+      </div>
+
+    </div>
+
+    <div class="type-section">
+      <div class="type-images">
+        <img src="type1.png" alt="Type 1" class="slide-img">
+        <img src="type2.png" alt="Type 2" class="slide-img">
+      </div>
+      <div class="type-text">
+        <p class="sketchbook-desc">by using sliders and buttons one can easily change the movement and structure of the type without having to use complex software. This allows more fluid interaction and more control over the final result of the text</p>
+      </div>
+    </div>
+
+    <div class="type-design-grid">
+      <img src="typedesign.png" alt="Type Design" class="slide-img">
+      <img src="typedesign1.png" alt="Type Design 1" class="slide-img">
+      <div class="type-placeholder">Image 1</div>
+      <div class="type-placeholder">Image 2</div>
+    </div>
+
+  </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Close">&#x2715;</button>
+    <button class="lightbox-prev" aria-label="Previous">&#8592;</button>
+    <div class="lbv-wrapper">
+      <img class="lightbox-img" src="" alt="">
+      <video class="lightbox-video" autoplay muted playsinline style="display:none"></video>
+      <div class="lbv-controls" style="display:none">
+        <button class="lbv-playpause" aria-label="Pause">&#9646;&#9646;</button>
+        <input type="range" class="lbv-scrubber" min="0" max="100" value="0" step="0.1">
+        <span class="lbv-time">0:00 / 0:00</span>
+      </div>
+    </div>
+    <button class="lightbox-next" aria-label="Next">&#8594;</button>
+  </div>
+
+  <script>
+    const dropdown = document.querySelector('.nav-dropdown');
+    const trigger  = dropdown.querySelector('.dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const open = dropdown.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', open);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Lightbox
+    const lightbox      = document.getElementById('lightbox');
+    const lightboxImg   = lightbox.querySelector('.lightbox-img');
+    const lightboxVideo = lightbox.querySelector('.lightbox-video');
+    const lbvControls   = lightbox.querySelector('.lbv-controls');
+    const lbvPlayPause  = lightbox.querySelector('.lbv-playpause');
+    const lbvScrubber   = lightbox.querySelector('.lbv-scrubber');
+    const lbvTime       = lightbox.querySelector('.lbv-time');
+    const closeBtn      = lightbox.querySelector('.lightbox-close');
+    const prevBtn       = lightbox.querySelector('.lightbox-prev');
+    const nextBtn       = lightbox.querySelector('.lightbox-next');
+    const slides        = Array.from(document.querySelectorAll('.slide-img'));
+    let current         = 0;
+    let videoActive     = false;
+    const SKIP          = 10; // seconds to skip per arrow click
+
+    function fmt(s) {
+      const m = Math.floor(s / 60);
+      return m + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+    }
+
+    function showSlide(index) {
+      current = (index + slides.length) % slides.length;
+      const el = slides[current];
+      videoActive = el.tagName === 'VIDEO';
+      lightboxImg.style.display   = videoActive ? 'none' : 'block';
+      lightboxVideo.style.display = videoActive ? 'block' : 'none';
+      lbvControls.style.display   = videoActive ? 'flex'  : 'none';
+      if (videoActive) {
+        lightboxVideo.src = el.src;
+        lightboxVideo.play();
+        lbvScrubber.value = 0;
+        lbvTime.textContent = '0:00 / 0:00';
+      } else {
+        lightboxImg.src = el.src;
+        lightboxImg.alt = el.alt;
+      }
+    }
+
+    function openLightbox(index) {
+      showSlide(index);
+      lightbox.classList.add('active');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      lightboxVideo.pause();
+      lightboxVideo.src = '';
+    }
+
+    // Click video to pause/play
+    lightboxVideo.addEventListener('click', () => {
+      if (lightboxVideo.paused) { lightboxVideo.play(); }
+      else                      { lightboxVideo.pause(); }
+    });
+
+    // Play / pause button
+    lbvPlayPause.addEventListener('click', () => {
+      if (lightboxVideo.paused) { lightboxVideo.play(); }
+      else                      { lightboxVideo.pause(); }
+    });
+
+    lightboxVideo.addEventListener('play',  () => { lbvPlayPause.innerHTML = '&#9646;&#9646;'; });
+    lightboxVideo.addEventListener('pause', () => { lbvPlayPause.innerHTML = '&#9654;'; });
+
+    // Scrubber updates as video plays
+    lightboxVideo.addEventListener('timeupdate', () => {
+      if (!lightboxVideo.duration) return;
+      lbvScrubber.value = (lightboxVideo.currentTime / lightboxVideo.duration) * 100;
+      lbvTime.textContent = fmt(lightboxVideo.currentTime) + ' / ' + fmt(lightboxVideo.duration);
+    });
+
+    // Seek on scrubber drag
+    lbvScrubber.addEventListener('input', () => {
+      if (lightboxVideo.duration) {
+        lightboxVideo.currentTime = (lbvScrubber.value / 100) * lightboxVideo.duration;
+      }
+    });
+
+    // Arrow buttons: skip video or navigate images
+    prevBtn.addEventListener('click', () => {
+      if (videoActive) { lightboxVideo.currentTime = Math.max(0, lightboxVideo.currentTime - SKIP); }
+      else             { showSlide(current - 1); }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (videoActive) { lightboxVideo.currentTime = Math.min(lightboxVideo.duration || 0, lightboxVideo.currentTime + SKIP); }
+      else             { showSlide(current + 1); }
+    });
+
+    slides.forEach((el, i) => {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => openLightbox(i));
+    });
+
+    closeBtn.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') { closeLightbox(); return; }
+      if (videoActive) {
+        if (e.key === 'ArrowLeft')  { lightboxVideo.currentTime = Math.max(0, lightboxVideo.currentTime - SKIP); }
+        if (e.key === 'ArrowRight') { lightboxVideo.currentTime = Math.min(lightboxVideo.duration || 0, lightboxVideo.currentTime + SKIP); }
+        if (e.key === ' ')          { e.preventDefault(); lightboxVideo.paused ? lightboxVideo.play() : lightboxVideo.pause(); }
+      } else {
+        if (e.key === 'ArrowLeft')  showSlide(current - 1);
+        if (e.key === 'ArrowRight') showSlide(current + 1);
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Design — Rebecca Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;1,14..32,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styleshtml.css">
+</head>
+<body>
+
+  <header>
+    <a class="nav-name" href="index.html">Rebecca Yang</a>
+
+    <a class="nav-about" href="About.html">About</a>
+
+    <div class="nav-dropdown">
+      <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        Design
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li role="none"><a href="installation.html" role="menuitem">Installation</a></li>
+        <li role="none"><a href="web-based.html" role="menuitem">Web-based</a></li>
+        <li role="none"><a href="product-design.html" role="menuitem">Product Design</a></li>
+      </ul>
+    </div>
+
+    <a class="linkedin-link" href="https://www.linkedin.com/in/rebecca-yang-01855634b" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+      </svg>
+    </a>
+  </header>
+
+  <section id="installation-page">
+    <h2 class="installation-heading">Product Design</h2>
+    <div class="installation-grid">
+      <div class="work-card work-card--constrained">
+        <a href="Stool.html" class="work-img-wrap">
+          <img src="stool1.png" alt="Collaborative Drawing Stool">
+        </a>
+        <p class="work-title">Collaborative Drawing Stool</p>
+      </div>
+      <div class="work-card work-card--constrained">
+        <a href="fishtoy.html" class="work-img-wrap">
+          <img src="fishtoy.png" alt="Fish Toy">
+        </a>
+        <p class="work-title">Fish Toy</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const dropdown = document.querySelector('.nav-dropdown');
+    const trigger  = dropdown.querySelector('.dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const open = dropdown.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', open);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+
+</body>
+</html>
