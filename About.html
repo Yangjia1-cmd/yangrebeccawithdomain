@@ -40,7 +40,7 @@
   </header>
 
   <section id="about">
-    <img class="about-photo" src="aboutme.png" alt="Rebecca Yang">
+    <img class="about-photo" src="meetmephoto.png" alt="Rebecca Yang">
     <div class="about-content">
       <h2 class="about-heading">
         Meet Me!<br>
@@ -51,9 +51,21 @@
       </p>
       <div class="about-links">
         <a href="https://www.linkedin.com/in/rebecca-yang-01855634b" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="job%20resume%20%20(5).pdf" target="_blank" rel="noopener">Resume</a>
+        <button type="button" class="about-link-btn" id="sketchbook-toggle" aria-expanded="false" aria-controls="sketchbook-reveal">Sketchbook</button>
+      </div>
+      <div class="sketchbook-reveal" id="sketchbook-reveal" hidden>
+        <img class="sketchbook-thumb" id="sketchbook-thumb" src="sketchbook-p1.jpg" alt="Sketchbook page 1">
       </div>
     </div>
   </section>
+
+  <div class="lightbox" id="sketchbook-lightbox" role="dialog" aria-modal="true" aria-label="Sketchbook" aria-hidden="true">
+    <button type="button" class="lightbox-close" id="sketchbook-close" aria-label="Close">&times;</button>
+    <button type="button" class="lightbox-prev" id="sketchbook-prev" aria-label="Previous page">&#8249;</button>
+    <img class="lightbox-img" id="sketchbook-full" src="sketchbook-p1.jpg" alt="Sketchbook page 1">
+    <button type="button" class="lightbox-next" id="sketchbook-next" aria-label="Next page">&#8250;</button>
+  </div>
 
   <footer>
     <span>&copy; 2025 Rebecca Yang</span>
@@ -74,6 +86,86 @@
         dropdown.classList.remove('open');
         trigger.setAttribute('aria-expanded', 'false');
       }
+    });
+
+    // Clicking the word "Sketchbook" reveals a preview below the links that
+    // flips through the pages every 2 seconds. Clicking that preview image
+    // expands it into a full viewer with prev/next arrows and a close button.
+    const skBtn    = document.getElementById('sketchbook-toggle');
+    const skReveal = document.getElementById('sketchbook-reveal');
+    const skThumb  = document.getElementById('sketchbook-thumb');
+    const skBox    = document.getElementById('sketchbook-lightbox');
+    const skFull   = document.getElementById('sketchbook-full');
+    const skPrev   = document.getElementById('sketchbook-prev');
+    const skNext   = document.getElementById('sketchbook-next');
+    const skClose  = document.getElementById('sketchbook-close');
+    const skPages  = [
+      'sketchbook-p1.jpg',  'sketchbook-p2.jpg',  'sketchbook-p3.jpg',
+      'sketchbook-p4.jpg',  'sketchbook-p5.jpg',  'sketchbook-p6.jpg',
+      'sketchbook-p7.jpg',  'sketchbook-p8.jpg',  'sketchbook-p9.jpg',
+      'sketchbook-p10.jpg', 'sketchbook-p11.jpg', 'sketchbook-p12.jpg'
+    ];
+    let   skIndex  = 0;
+    let   skTimer  = null;
+
+    function skRender() {
+      const src = skPages[skIndex];
+      const alt = 'Sketchbook page ' + (skIndex + 1);
+      skThumb.src = src; skThumb.alt = alt;
+      skFull.src  = src; skFull.alt  = alt;
+    }
+
+    function skStartCycle() {
+      clearInterval(skTimer);
+      skTimer = setInterval(() => {
+        skIndex = (skIndex + 1) % skPages.length;
+        skRender();
+      }, 2000);
+    }
+
+    function skStopCycle() {
+      clearInterval(skTimer);
+      skTimer = null;
+    }
+
+    function skGo(step) {
+      skIndex = (skIndex + step + skPages.length) % skPages.length;
+      skRender();
+    }
+
+    function skShut() {
+      skBox.classList.remove('active');
+      skBox.setAttribute('aria-hidden', 'true');
+      if (!skReveal.hasAttribute('hidden')) skStartCycle();
+    }
+
+    // 1. Toggle the inline preview + its 2s auto-flip
+    skBtn.addEventListener('click', () => {
+      const open = skReveal.hasAttribute('hidden');
+      skReveal.toggleAttribute('hidden', !open);
+      skBtn.setAttribute('aria-expanded', String(open));
+      if (open) { skRender(); skStartCycle(); }
+      else { skStopCycle(); }
+    });
+
+    // 2. Click the preview to expand into the full viewer
+    skThumb.addEventListener('click', () => {
+      skStopCycle();
+      skRender();
+      skBox.classList.add('active');
+      skBox.setAttribute('aria-hidden', 'false');
+    });
+
+    skClose.addEventListener('click', skShut);
+    skPrev.addEventListener('click', () => skGo(-1));
+    skNext.addEventListener('click', () => skGo(1));
+    skBox.addEventListener('click', (e) => { if (e.target === skBox) skShut(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (!skBox.classList.contains('active')) return;
+      if (e.key === 'Escape')     skShut();
+      if (e.key === 'ArrowLeft')  skGo(-1);
+      if (e.key === 'ArrowRight') skGo(1);
     });
   </script>
 
