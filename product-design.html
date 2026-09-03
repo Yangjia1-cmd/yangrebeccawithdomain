@@ -39,6 +39,26 @@
     </a>
   </header>
 
+  <aside class="sidebar">
+    <p class="sidebar-tagline">Human-centric Designer building in both digital and physical spaces.</p>
+
+    <div class="tool-picker">
+      <p class="tool-picker-label">Drawing Tool</p>
+      <button type="button" class="tool-option is-active" data-tool="pencil">Color Pencil</button>
+      <button type="button" class="tool-option" data-tool="keyboard">Keyboard</button>
+      <button type="button" class="tool-option" data-tool="replication">Replication</button>
+    </div>
+
+    <p class="sidebar-bio">I'm Rebecca Yang and I'm currently studying at Rhode Island School of Design (RISD). I'm a designer focusing on human-centric designs with the added element of tech. I'm interested in intuitive design and making things that is both fun to use and immersive.</p>
+
+    <div class="sidebar-links">
+      <a class="sidebar-link" href="https://www.linkedin.com/in/rebecca-yang-01855634b" target="_blank" rel="noopener">&rarr; LinkedIn</a>
+      <a class="sidebar-link" href="job%20resume%20%20(5).pdf" target="_blank" rel="noopener">&rarr; Resume</a>
+    </div>
+  </aside>
+
+  <main class="content">
+
   <section id="installation-page">
     <h2 class="installation-heading">Product Design</h2>
     <div class="installation-grid">
@@ -57,6 +77,8 @@
     </div>
   </section>
 
+  </main>
+
   <script>
     const dropdown = document.querySelector('.nav-dropdown');
     const trigger  = dropdown.querySelector('.dropdown-trigger');
@@ -73,6 +95,8 @@
       }
     });
   </script>
+
+  <script src="drawingtool.js"></script>
 
 </body>
 </html>

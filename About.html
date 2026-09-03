@@ -55,7 +55,11 @@
         <button type="button" class="about-link-btn" id="sketchbook-toggle" aria-expanded="false" aria-controls="sketchbook-reveal">Sketchbook</button>
       </div>
       <div class="sketchbook-reveal" id="sketchbook-reveal" hidden>
+        <p class="about-subhead">Some of my non-serious work that I do for fun</p>
         <img class="sketchbook-thumb" id="sketchbook-thumb" src="sketchbook-p1.jpg" alt="Sketchbook page 1">
+        <video class="sketchbook-video" id="sketchbook-video" src="1.4%20(1).mp4" autoplay loop muted playsinline></video>
+        <img class="sketchbook-still" id="sketchbook-still" src="sketchbook3.png" alt="Sketchbook work">
+        <video class="sketchbook-clip" id="sketchbook-clip" src="2.1.mp4" autoplay loop muted playsinline></video>
       </div>
     </div>
   </section>
@@ -67,8 +71,48 @@
     <button type="button" class="lightbox-next" id="sketchbook-next" aria-label="Next page">&#8250;</button>
   </div>
 
+  <div class="lightbox" id="still-lightbox" role="dialog" aria-modal="true" aria-label="Sketchbook work" aria-hidden="true">
+    <button type="button" class="lightbox-close" id="still-close" aria-label="Close">&times;</button>
+    <img class="lightbox-img" src="sketchbook3.png" alt="Sketchbook work">
+  </div>
+
+  <div class="lightbox" id="video-lightbox" role="dialog" aria-modal="true" aria-label="Obscurity" aria-hidden="true">
+    <button type="button" class="lightbox-close" id="video-close" aria-label="Close">&times;</button>
+    <div class="video-viewer">
+      <video class="video-viewer-media" id="video-viewer-media" src="1.4%20(1).mp4" loop muted playsinline></video>
+      <p class="video-viewer-title">Obscurity</p>
+      <p class="video-viewer-sub">Unity + Blender</p>
+      <p class="video-viewer-time" id="video-viewer-time">00:00 / 00:00</p>
+      <div class="video-viewer-controls">
+        <button type="button" id="video-play">Play</button>
+        <button type="button" id="video-pause">Pause</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="weaving-lightbox" role="dialog" aria-modal="true" aria-label="Computational Weaving Collaboration" aria-hidden="true">
+    <button type="button" class="lightbox-close" id="weaving-close" aria-label="Close">&times;</button>
+    <div class="video-viewer">
+      <div class="video-viewer-row">
+        <video class="video-viewer-media" id="weaving-viewer-media" src="2.1.mp4" loop muted playsinline></video>
+        <div class="video-viewer-side-col">
+          <img class="video-viewer-side" src="2.2.png" alt="Computational Weaving Collaboration">
+          <img class="video-viewer-side" src="2.3.png" alt="Computational Weaving Collaboration">
+          <img class="video-viewer-side" src="2.4.png" alt="Computational Weaving Collaboration">
+        </div>
+      </div>
+      <p class="video-viewer-title">Computational Weaving Collaboration</p>
+      <p class="video-viewer-sub">HTML + Weaving</p>
+      <p class="video-viewer-time" id="weaving-viewer-time">00:00 / 00:00</p>
+      <div class="video-viewer-controls">
+        <button type="button" id="weaving-play">Play</button>
+        <button type="button" id="weaving-pause">Pause</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <span>&copy; 2025 Rebecca Yang</span>
+    <span>&copy; Rebecca Yang</span>
     <a href="mailto:ryang08@risd.edu">ryang08@risd.edu</a>
   </footer>
 
@@ -166,6 +210,122 @@
       if (e.key === 'Escape')     skShut();
       if (e.key === 'ArrowLeft')  skGo(-1);
       if (e.key === 'ArrowRight') skGo(1);
+    });
+
+    // Arriving from another page with #sketchbook opens the section and scrolls to it
+    if (location.hash === '#sketchbook') {
+      if (skReveal.hasAttribute('hidden')) skBtn.click();
+      skReveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Clicking the sketchbook video expands it: title, tools, timecode, play/pause.
+    const svThumb = document.getElementById('sketchbook-video');
+    const vBox    = document.getElementById('video-lightbox');
+    const vMedia  = document.getElementById('video-viewer-media');
+    const vTime   = document.getElementById('video-viewer-time');
+    const vPlay   = document.getElementById('video-play');
+    const vPause  = document.getElementById('video-pause');
+    const vClose  = document.getElementById('video-close');
+
+    function fmtTime(t) {
+      t = Math.max(0, Math.floor(t || 0));
+      const m = Math.floor(t / 60);
+      const s = t % 60;
+      return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function vRenderTime() {
+      vTime.textContent = fmtTime(vMedia.currentTime) + ' / ' + fmtTime(vMedia.duration);
+    }
+
+    vMedia.addEventListener('loadedmetadata', vRenderTime);
+    vMedia.addEventListener('timeupdate', vRenderTime);
+
+    function vOpen() {
+      svThumb.pause();
+      vBox.classList.add('active');
+      vBox.setAttribute('aria-hidden', 'false');
+      vRenderTime();
+      vMedia.play();
+    }
+
+    function vShut() {
+      vBox.classList.remove('active');
+      vBox.setAttribute('aria-hidden', 'true');
+      vMedia.pause();
+      if (!skReveal.hasAttribute('hidden')) svThumb.play();
+    }
+
+    svThumb.addEventListener('click', vOpen);
+    vClose.addEventListener('click', vShut);
+    vPlay.addEventListener('click', () => vMedia.play());
+    vPause.addEventListener('click', () => vMedia.pause());
+    vBox.addEventListener('click', (e) => { if (e.target === vBox) vShut(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (vBox.classList.contains('active') && e.key === 'Escape') vShut();
+    });
+
+    // Clicking the sketchbook still image expands it in a simple viewer.
+    const skStill    = document.getElementById('sketchbook-still');
+    const stillBox   = document.getElementById('still-lightbox');
+    const stillClose = document.getElementById('still-close');
+
+    function stillShut() {
+      stillBox.classList.remove('active');
+      stillBox.setAttribute('aria-hidden', 'true');
+    }
+
+    skStill.addEventListener('click', () => {
+      stillBox.classList.add('active');
+      stillBox.setAttribute('aria-hidden', 'false');
+    });
+    stillClose.addEventListener('click', stillShut);
+    stillBox.addEventListener('click', (e) => { if (e.target === stillBox) stillShut(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (stillBox.classList.contains('active') && e.key === 'Escape') stillShut();
+    });
+
+    // Clicking 2.1.mp4 expands it beside 2.2.png: title, tools, timecode, play/pause.
+    const wClip  = document.getElementById('sketchbook-clip');
+    const wBox   = document.getElementById('weaving-lightbox');
+    const wMedia = document.getElementById('weaving-viewer-media');
+    const wTime  = document.getElementById('weaving-viewer-time');
+    const wPlay  = document.getElementById('weaving-play');
+    const wPause = document.getElementById('weaving-pause');
+    const wClose = document.getElementById('weaving-close');
+
+    function wRenderTime() {
+      wTime.textContent = fmtTime(wMedia.currentTime) + ' / ' + fmtTime(wMedia.duration);
+    }
+
+    wMedia.addEventListener('loadedmetadata', wRenderTime);
+    wMedia.addEventListener('timeupdate', wRenderTime);
+
+    function wOpen() {
+      wClip.pause();
+      wBox.classList.add('active');
+      wBox.setAttribute('aria-hidden', 'false');
+      wRenderTime();
+      wMedia.play();
+    }
+
+    function wShut() {
+      wBox.classList.remove('active');
+      wBox.setAttribute('aria-hidden', 'true');
+      wMedia.pause();
+      if (!skReveal.hasAttribute('hidden')) wClip.play();
+    }
+
+    wClip.addEventListener('click', wOpen);
+    wClose.addEventListener('click', wShut);
+    wPlay.addEventListener('click', () => wMedia.play());
+    wPause.addEventListener('click', () => wMedia.pause());
+    wBox.addEventListener('click', (e) => { if (e.target === wBox) wShut(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (wBox.classList.contains('active') && e.key === 'Escape') wShut();
     });
   </script>
 
