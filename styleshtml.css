@@ -509,6 +509,14 @@ header {
   color: var(--text);
 }
 
+.project-page-role {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
 .project-page-meta {
   display: flex;
   flex-direction: column;

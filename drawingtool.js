@@ -1,7 +1,7 @@
 // Drawing tool — follows the cursor. Three modes, switched from the sidebar:
-//   pencil      — a thin muted line trail
+//   pencil      — pixelated squares trailing the cursor
 //   keyboard    — random keyboard symbols scattered along the path that fade away
-//   replication — copies of the mouse arrow that fade out
+//   replication — a single persistent cursor copy, offset down-and-right
 // The muted color cycles every 3 seconds.
 (function () {
   if (!document.querySelector('.tool-option')) return;
@@ -20,6 +20,8 @@
     '#d69e72'  // muted orange
   ];
   const SYMBOLS = ['*','&','^','%','$','#','@','!','~','+','=','?','/','<','>'];
+  const PIXEL_SIZE = 4;
+  const REP_OFFSET = 46; // replicated cursor sits this far down-and-right of the real one
   const CURSOR_SVG =
     '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="26" viewBox="0 0 22 26">' +
     '<path d="M2 2 L2 22 L7.5 16.5 L11 24 L14 22.6 L10.5 15.2 L18 15 Z" ' +
@@ -29,15 +31,12 @@
   let mode = 'pencil';
   let last = null;
   let lastCharTime = 0;
-  let lastRepAt = null;
+  let repCursorEl = null;
 
   const currentColor = () => MUTED_COLORS[colorIndex];
 
   function applyStyle() {
-    ctx.lineWidth  = 1.5;
-    ctx.lineCap    = 'round';
-    ctx.lineJoin   = 'round';
-    ctx.strokeStyle = currentColor();
+    ctx.fillStyle = currentColor();
   }
 
   function resize() {
@@ -77,28 +76,44 @@
     }
   }
 
-  function drawSegment(ax, ay, bx, by) {
-    ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
-    ctx.stroke();
+  // Pixel pencil — fill one grid-snapped square, like a pixel-art brush.
+  function drawPixel(x, y) {
+    const gx = Math.floor(x / PIXEL_SIZE) * PIXEL_SIZE;
+    const gy = Math.floor(y / PIXEL_SIZE) * PIXEL_SIZE;
+    ctx.fillStyle = currentColor();
+    ctx.fillRect(gx, gy, PIXEL_SIZE, PIXEL_SIZE);
   }
 
-  // Replication — drop a copy of the mouse arrow that fades out.
-  function spawnCursor(x, y) {
-    const el = document.createElement('div');
-    el.innerHTML = CURSOR_SVG;
-    el.style.cssText =
-      'position:fixed;left:' + x + 'px;top:' + y + 'px;' +
-      'pointer-events:none;z-index:9999;opacity:0.9;' +
-      'transform:translate(-2px,-2px);' +
-      'transition:opacity 0.55s ease, transform 0.55s ease;';
-    document.body.appendChild(el);
-    requestAnimationFrame(() => {
-      el.style.opacity = '0';
-      el.style.transform = 'translate(-2px,-2px) scale(0.82)';
-    });
-    setTimeout(() => el.remove(), 600);
+  // Stamp pixels along a->b so fast mouse movement still leaves a solid trail.
+  function drawPixelTrail(ax, ay, bx, by) {
+    const dist = Math.hypot(bx - ax, by - ay);
+    const steps = Math.max(1, Math.ceil(dist / (PIXEL_SIZE * 0.7)));
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      drawPixel(ax + (bx - ax) * t, ay + (by - ay) * t);
+    }
+  }
+
+  // Replication — a single cursor copy that stays on screen, offset from the real one.
+  function ensureRepCursor() {
+    if (!repCursorEl) {
+      repCursorEl = document.createElement('div');
+      repCursorEl.innerHTML = CURSOR_SVG;
+      repCursorEl.style.cssText =
+        'position:fixed;left:0;top:0;pointer-events:none;z-index:9999;opacity:0.9;';
+      document.body.appendChild(repCursorEl);
+    }
+    return repCursorEl;
+  }
+
+  function moveRepCursor(x, y) {
+    const el = ensureRepCursor();
+    el.style.display = 'block';
+    el.style.transform = 'translate(' + (x + REP_OFFSET) + 'px,' + (y + REP_OFFSET) + 'px)';
+  }
+
+  function hideRepCursor() {
+    if (repCursorEl) repCursorEl.style.display = 'none';
   }
 
   window.addEventListener('mousemove', (e) => {
@@ -106,7 +121,8 @@
     const from = last || p;
 
     if (mode === 'pencil') {
-      if (last) drawSegment(last.x, last.y, p.x, p.y);
+      if (last) drawPixelTrail(last.x, last.y, p.x, p.y);
+      else drawPixel(p.x, p.y);
     } else if (mode === 'keyboard') {
       // One symbol per ~7px travelled — the count rises directly with
       // mouse speed — plus a time fallback so a slow drift still trails.
@@ -119,14 +135,7 @@
         lastCharTime = e.timeStamp;
       }
     } else if (mode === 'replication') {
-      // Drop a fading arrow copy every ~26px of travel.
-      const moved = lastRepAt
-        ? Math.hypot(p.x - lastRepAt.x, p.y - lastRepAt.y)
-        : Infinity;
-      if (moved > 26) {
-        spawnCursor(p.x, p.y);
-        lastRepAt = p;
-      }
+      moveRepCursor(p.x, p.y);
     }
 
     last = p;
@@ -166,7 +175,7 @@
       mode = btn.dataset.tool;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       last = null;
-      lastRepAt = null;
+      if (mode !== 'replication') hideRepCursor();
     });
   });
 })();
