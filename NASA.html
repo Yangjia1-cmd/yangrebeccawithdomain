@@ -8,8 +8,87 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;1,14..32,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styleshtml.css">
+  <style>
+    .pw-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+    .pw-gate.hidden { display: none; }
+    .pw-gate-box {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: min(320px, 85vw);
+      text-align: center;
+    }
+    .pw-gate-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 400;
+      margin: 0;
+    }
+    .pw-gate-sub { color: var(--muted); font-size: 0.9rem; margin: 0; }
+    .pw-gate input {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+    }
+    .pw-gate input:focus { border-color: var(--text); }
+    .pw-gate button {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      padding: 10px 12px;
+      border: 1px solid var(--text);
+      background: var(--text);
+      color: var(--bg);
+      cursor: pointer;
+    }
+    .pw-gate-error { color: #b3261e; font-size: 0.85rem; min-height: 1.2em; margin: 0; }
+    .pw-gate-back { color: var(--muted); font-size: 0.85rem; }
+  </style>
 </head>
 <body>
+
+  <div class="pw-gate" id="pw-gate">
+    <form class="pw-gate-box" id="pw-form">
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password" autofocus>
+      <button type="submit">Enter</button>
+      <p class="pw-gate-error" id="pw-error"></p>
+      <a class="pw-gate-back" href="index.html">&larr; Back to home</a>
+    </form>
+  </div>
+  <script>
+    (function () {
+      const gate = document.getElementById('pw-gate');
+      if (sessionStorage.getItem('nasaUnlocked') === 'true') {
+        gate.classList.add('hidden');
+        return;
+      }
+      document.body.style.overflow = 'hidden';
+      document.getElementById('pw-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('pw-input');
+        if (input.value === 'SandyBeach24') {
+          sessionStorage.setItem('nasaUnlocked', 'true');
+          gate.classList.add('hidden');
+          document.body.style.overflow = '';
+        } else {
+          document.getElementById('pw-error').textContent = 'Incorrect password.';
+          input.value = '';
+          input.focus();
+        }
+      });
+    })();
+  </script>
 
   <header>
     <a class="nav-name" href="index.html">Rebecca Yang</a>
@@ -106,7 +185,8 @@
       </div>
 
       <h2 class="sketchbook-title">Collaboration</h2>
-      <p class="sketchbook-desc">Special thanks to my teammates: Amy Yuan, Lily, Si Chen and Design Lead Sandy Hong.</p>
+      <p class="sketchbook-desc">Special thanks to my teammates: <a href="https://www.linkedin.com/in/amy-yuan-586738413" target="_blank" rel="noopener noreferrer">Amy Yuan</a>, Lily, <a href="https://www.linkedin.com/in/si-chen-b8b30534b" target="_blank" rel="noopener noreferrer">Si Chen</a> and Design Lead <a href="https://www.linkedin.com/in/yhong2003" target="_blank" rel="noopener noreferrer">Sandy Hong</a>.</p>
+      <p class="sketchbook-desc">I contributed to the LTV Beacon, specifically the signal strength and distance displays, and to the decision to place oxygen and carbon dioxide in the visual hierarchy of Suit 1 and Suit 2. Amy worked on the LTV Beacon, Lily worked on the Suits, and Si worked on the EV. All final designs were finalized by Sandy.</p>
 
       <h2 class="sketchbook-title">Final Results</h2>
       <p class="sketchbook-desc">After multiple drafts and collaborations, our team finalized these systems for Telemetry.</p>

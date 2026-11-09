@@ -8,6 +8,51 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;1,14..32,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styleshtml.css">
+  <style>
+    .zoom-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .zoom-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .zoom-box {
+      position: relative;
+    }
+    .zoom-box img {
+      display: block;
+      height: min(92vh, 92vw);
+      width: auto;
+      transform: scale(0.9);
+      transition: transform 0.25s ease;
+    }
+    .zoom-overlay.active .zoom-box img { transform: scale(1); }
+    .zoom-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(25, 23, 20, 0.75);
+      color: #fff;
+      font-size: 18px;
+      line-height: 32px;
+      text-align: center;
+      cursor: pointer;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -53,7 +98,7 @@
 
     <div class="sidebar-links">
       <a class="sidebar-link" href="https://www.linkedin.com/in/rebecca-yang-01855634b" target="_blank" rel="noopener">&rarr; LinkedIn</a>
-      <a class="sidebar-link" href="job%20resume%20%20(5).pdf" target="_blank" rel="noopener">&rarr; Resume</a>
+      <a class="sidebar-link" href="job%20resume%20for%20risd.pdf" target="_blank" rel="noopener">&rarr; Resume</a>
       <a class="sidebar-link" href="About.html#sketchbook">&rarr; Sketchbook</a>
     </div>
   </aside>
@@ -83,6 +128,16 @@
         <a href="NASA.html" class="work-img-wrap">
           <img src="NASA.png" alt="NASA">
         </a>
+      </div>
+      <div class="work-card work-card--constrained">
+        <a href="Board.html" class="work-img-wrap">
+          <img src="board%20game%20photos/DSC06141.JPG" alt="Bio Wars board game">
+        </a>
+      </div>
+      <div class="work-card work-card--constrained">
+        <div class="work-img-wrap">
+          <img src="board%20game%20photos/rollypollyball.png" alt="Rolly polly ball" id="rolly-thumb">
+        </div>
       </div>
     </div>
   </section>
@@ -177,6 +232,39 @@
       new ResizeObserver(sizeImage).observe(body);
     });
 
+  </script>
+
+  <div class="zoom-overlay" id="zoom-overlay" aria-hidden="true">
+    <div class="zoom-box">
+      <img src="board%20game%20photos/rollypollyball.png" alt="Rolly polly ball">
+      <button class="zoom-close" id="zoom-close" aria-label="Close">&times;</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const thumb   = document.getElementById('rolly-thumb');
+      const overlay = document.getElementById('zoom-overlay');
+      const close   = document.getElementById('zoom-close');
+
+      function openZoom() {
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+      function closeZoom() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+
+      thumb.addEventListener('click', openZoom);
+      close.addEventListener('click', closeZoom);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeZoom();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeZoom();
+      });
+    })();
   </script>
 
   <script src="drawingtool.js"></script>
